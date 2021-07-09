@@ -2,6 +2,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import { ElementNames } from '../common/Constants';
 import { ITaskList } from '../interfaces/TaskInterface';
+import { Validations } from '../common/Validations';
 
 interface Props {
     toggle(): void;
@@ -16,11 +17,14 @@ const EditTask = ({ toggle, modal, updateTask, taskObj }: Props) => {
     const [description, setDescription] = useState<string>('');
     const [taskObjToEdit, setTaskObjToEdit] = useState<ITaskList>(taskObj);
     const [status, setStatus] = useState<string>('0');
+    const [priority, setPriority] = useState<string>('1');
+    const [editButtonIsDisabled, setEditButtonIsDisabled] = useState<boolean>(true);
 
     const handleChangeInput = (event: ChangeEvent<HTMLInputElement>): void => {
         const { name, value } = event.target;
         if (name === ElementNames.taskName) {
             setTaskName(value);
+            isSaveDisabled(value, priority);
         }
     }
 
@@ -36,11 +40,16 @@ const EditTask = ({ toggle, modal, updateTask, taskObj }: Props) => {
         if (name === ElementNames.selectStatus) {
             setStatus(value);
         }
+        if (name === ElementNames.taskPriority) {
+            setPriority(value);
+            isSaveDisabled(taskName, value);
+        }
     }
 
     const handleUpdate = () => {
         let tempTaskObj: ITaskList = {
             taskId: taskObjToEdit.taskId,
+            taskPriority: priority,
             taskstatus: status,
             taskName: taskName,
             taskDescription: description
@@ -49,14 +58,29 @@ const EditTask = ({ toggle, modal, updateTask, taskObj }: Props) => {
         toggle();
     }
 
+    const isSaveDisabled = (taskNameReceived: string, priorityReceived: string): void => {
+        let tempTaskObj: ITaskList = {
+            taskId: taskObjToEdit.taskId,
+            taskName: taskNameReceived,
+            taskPriority: priorityReceived,
+        };
+        const data = !Validations.taskListisValid(tempTaskObj)
+        setEditButtonIsDisabled(data);
+    }
+
     useEffect(() => {
         setTaskObjToEdit(taskObj);
         setTaskName(taskObjToEdit.taskName);
-        setDescription(taskObjToEdit.taskDescription);
+        if (taskObjToEdit.taskDescription) {
+            setDescription(taskObjToEdit.taskDescription);
+        }
         if (taskObjToEdit.taskstatus) {
             setStatus(taskObjToEdit.taskstatus);
         }
-    }, [taskObjToEdit.taskName, taskObjToEdit.taskDescription, taskObjToEdit.taskstatus, taskObj])
+        if (taskObjToEdit.taskPriority) {
+            setPriority(taskObjToEdit.taskPriority);
+        }
+    }, [taskObjToEdit.taskName, taskObjToEdit.taskDescription, taskObjToEdit.taskstatus, taskObj, taskObjToEdit.taskPriority])
 
     return (
         <div>
@@ -80,6 +104,14 @@ const EditTask = ({ toggle, modal, updateTask, taskObj }: Props) => {
                             </select >
                         </div>
                         <div className="form-group">
+                            <label htmlFor="statusSelect">Priority</label>
+                            <select name="taskPriority" id="PrioritySelect" className="form-control" onChange={handleChangeSelect} value={priority}>
+                                <option value="1">Low</option>
+                                <option value="2">Medium</option>
+                                <option value="3">High</option>
+                            </select >
+                        </div>
+                        <div className="form-group">
                             <label htmlFor="taskDescription">Description</label>
                             <textarea name="taskDescription" id="taskDescription" rows={5} className="form-control" value={description} onChange={handleChangeTextArea}></textarea>
                         </div>
@@ -87,7 +119,7 @@ const EditTask = ({ toggle, modal, updateTask, taskObj }: Props) => {
                     </form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={handleUpdate}>Update</Button>{' '}
+                    <Button color="primary" disabled={editButtonIsDisabled} onClick={handleUpdate}>Update</Button>{' '}
                     <Button color="secondary" onClick={toggle}>Cancel</Button>
                 </ModalFooter>
             </Modal>

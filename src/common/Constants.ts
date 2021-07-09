@@ -4,11 +4,12 @@ export class ElementNames {
     public static taskName = 'taskName';
     public static selectStatus = 'selectStatus';
     public static taskDescription = 'taskDescription';
+    public static taskPriority = 'taskPriority';
 }
 
 
 export class Colors {
-    public static cardColors : IColors[] = [
+    public static cardColors: IColors[] = [
         {
             primaryColor: "#5D93E1",
             secondaryColor: "#ECF3FC"
