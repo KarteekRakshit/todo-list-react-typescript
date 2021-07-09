@@ -17,8 +17,10 @@ const TodoList = () => {
     }, [])
 
     const saveTask = (taskObj: ITaskList): void => {
-        setTaskList([...taskList, taskObj]);
-        localStorage.setItem('taskList', JSON.stringify(taskList));
+        let tempList = taskList;
+        tempList.push(taskObj);
+        setTaskList(tempList);
+        localStorage.setItem('taskList', JSON.stringify(tempList));
     }
 
     const deleteTask = (index: number): void => {
