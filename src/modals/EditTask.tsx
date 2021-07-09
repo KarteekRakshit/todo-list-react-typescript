@@ -32,6 +32,7 @@ const EditTask = ({ toggle, modal, updateTask, taskObj }: Props) => {
         const { name, value } = event.target;
         if (name === ElementNames.taskDescription) {
             setDescription(value);
+            isSaveDisabled(taskName, priority);
         }
     }
 
@@ -39,6 +40,7 @@ const EditTask = ({ toggle, modal, updateTask, taskObj }: Props) => {
         const { name, value } = event.target;
         if (name === ElementNames.selectStatus) {
             setStatus(value);
+            isSaveDisabled(taskName, priority);
         }
         if (name === ElementNames.taskPriority) {
             setPriority(value);
