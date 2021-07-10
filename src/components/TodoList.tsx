@@ -23,9 +23,10 @@ const TodoList = () => {
         localStorage.setItem('taskList', JSON.stringify(tempList));
     }
 
-    const deleteTask = (index: number): void => {
+    const deleteTask = (taskObj: ITaskList): void => {
         let tempList = taskList;
-        tempList.splice(index, 1);
+        tempList = tempList.filter((ele) => ele.taskId !== taskObj.taskId);
+        //tempList.splice(index, 1);
         localStorage.setItem('taskList', JSON.stringify(tempList));
         setTaskList(tempList);
         window.location.reload();

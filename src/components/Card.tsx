@@ -7,7 +7,7 @@ import EditTask from '../modals/EditTask'
 interface Props {
     taskObj: ITaskList;
     index: number;
-    deleteTask(index: number): void;
+    deleteTask(taskObj: ITaskList): void;
     updateTaskList(obj: ITaskList, index: number): void;
 }
 
@@ -17,7 +17,7 @@ const Card = ({ taskObj, index, deleteTask, updateTaskList }: Props) => {
     const toggle = (): void => setModal(!modal);
 
     const handleDelete = (): void => {
-        deleteTask(index);
+        deleteTask(taskObj);
     }
 
     const updateTask = (obj: ITaskList): void => {
